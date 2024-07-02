@@ -246,25 +246,26 @@ GravityPoint.prototype = (function(o) {
     
         ctx.save();
     
-        // Outer gradient
-        grd = ctx.createRadialGradient(this.x, this.y, this.radius, this.x, this.y, this.radius * 5);
-        grd.addColorStop(0, 'rgba(0, 0, 0, 0.1)');
-        grd.addColorStop(1, 'rgba(255, 255, 255, 0)'); // Changed to white with 0 alpha
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius * 5, 0, Math.PI * 2, false);
-        ctx.fillStyle = grd;
-        ctx.fill();
-    
-        // Inner gradient
-        r = Math.random() * this.currentRadius * 0.7 + this.currentRadius * 0.3;
-        grd = ctx.createRadialGradient(this.x, this.y, r, this.x, this.y, this.currentRadius);
-        grd.addColorStop(0, 'rgba(0, 0, 0, 1)');
-        grd.addColorStop(1, Math.random() < 0.2 ? 'rgba(255, 255, 255, 0.15)' : 'rgba(192, 192, 192, 0.75)'); // Changed to white and gray
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2, false);
-        ctx.fillStyle = grd;
-        ctx.fill();
-        ctx.restore();
+    // Outer gradient
+    grd = ctx.createRadialGradient(this.x, this.y, this.radius, this.x, this.y, this.radius * 10);  // Extended radius
+    grd.addColorStop(0, 'rgba(255, 255, 255, 0.2)');   // More visible near the center
+    grd.addColorStop(0.5, 'rgba(255, 255, 255, 0.05)'); // Start fading out at midpoint
+    grd.addColorStop(1, 'rgba(255, 255, 255, 0)');     // Completely transparent at the edge
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius * 10, 0, Math.PI * 2, false);  // Increased arc radius
+    ctx.fillStyle = grd;
+    ctx.fill();
+
+    // Inner gradient (keep this part as it was)
+    r = Math.random() * this.currentRadius * 0.7 + this.currentRadius * 0.3;
+    grd = ctx.createRadialGradient(this.x, this.y, r, this.x, this.y, this.currentRadius);
+    grd.addColorStop(0, 'rgba(0, 0, 0, 1)');
+    grd.addColorStop(1, Math.random() < 0.2 ? 'rgba(255, 255, 255, 0.15)' : 'rgba(192, 192, 192, 0.75)');
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2, false);
+    ctx.fillStyle = grd;
+    ctx.fill();
+    ctx.restore();  
     }
         
 });
@@ -326,7 +327,7 @@ Particle.prototype = (function(o) {
 
     // Configs
 
-    var BACKGROUND_COLOR      = 'rgba(11, 51, 56, 1)',
+    var BACKGROUND_COLOR      = 'rgba(13, 8, 11, 1)',
         PARTICLE_RADIUS       = 1,
         G_POINT_RADIUS        = 10,
         G_POINT_RADIUS_LIMITS = 65;
