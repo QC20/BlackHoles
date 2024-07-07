@@ -415,121 +415,121 @@ Particle.prototype = (function(o) {
     }
 
 
-    // Functions
+        // Functions
 
-    function addParticle(num) {
-        var i, p;
-        for (i = 0; i < num; i++) {
-            p = new Particle(
-                Math.floor(Math.random() * screenWidth - PARTICLE_RADIUS * 2) + 1 + PARTICLE_RADIUS,
-                Math.floor(Math.random() * screenHeight - PARTICLE_RADIUS * 2) + 1 + PARTICLE_RADIUS,
-                PARTICLE_RADIUS
-            );
-            p.addSpeed(Vector.random());
-            particles.push(p);
-        }
-    }
-
-    function removeParticle(num) {
-        if (particles.length < num) num = particles.length;
-        for (var i = 0; i < num; i++) {
-            particles.pop();
-        }
-    }
-
-
-    // GUI Control
-
-    control = {
-        particleNum: 250
-    };
-
-
-    // Init
-
-    canvas  = document.getElementById('c');
-    bufferCvs = document.createElement('canvas');
-
-    window.addEventListener('resize', resize, false);
-    resize(null);
-
-    addParticle(control.particleNum);
-
-    canvas.addEventListener('mousemove', mouseMove, false);
-    canvas.addEventListener('mousedown', mouseDown, false);
-    canvas.addEventListener('mouseup', mouseUp, false);
-    canvas.addEventListener('dblclick', doubleClick, false);
-
-
-    // GUI
-
-    gui = new dat.GUI();
-    gui.add(control, 'particleNum', 0, 500).step(1).name('Particle Num').onChange(function() {
-        var n = (control.particleNum | 0) - particles.length;
-        if (n > 0)
-            addParticle(n);
-        else if (n < 0)
-            removeParticle(-n);
-    });
-    gui.add(GravityPoint, 'interferenceToPoint').name('Interference Between Point');
-    gui.close();
-
-
-    // Start Update
-
-    var loop = function() {
-        var i, len, g, p;
-
-        context.save();
-        context.fillStyle = BACKGROUND_COLOR;
-        context.fillRect(0, 0, screenWidth, screenHeight);
-        context.fillStyle = grad;
-        context.fillRect(0, 0, screenWidth, screenHeight);
-        context.restore();
-
-        for (i = 0, len = gravities.length; i < len; i++) {
-            g = gravities[i];
-            if (g.dragging) g.drag(mouse);
-            g.render(context);
-            if (g.destroyed) {
-                gravities.splice(i, 1);
-                len--;
-                i--;
+        function addParticle(num) {
+            var i, p;
+            for (i = 0; i < num; i++) {
+                p = new Particle(
+                    Math.floor(Math.random() * screenWidth - PARTICLE_RADIUS * 2) + 1 + PARTICLE_RADIUS,
+                    Math.floor(Math.random() * screenHeight - PARTICLE_RADIUS * 2) + 1 + PARTICLE_RADIUS,
+                    PARTICLE_RADIUS
+                );
+                p.addSpeed(Vector.random());
+                particles.push(p);
             }
         }
-      
-        bufferCtx.save();
-        bufferCtx.globalCompositeOperation = 'destination-out';
-        bufferCtx.globalAlpha = 0.35;
-        bufferCtx.fillRect(0, 0, screenWidth, screenHeight);
-        bufferCtx.restore();
 
-        len = particles.length;
-        bufferCtx.save();
-        bufferCtx.fillStyle = bufferCtx.strokeStyle = '#fff';
-        bufferCtx.lineCap = bufferCtx.lineJoin = 'round';
-        bufferCtx.lineWidth = PARTICLE_RADIUS * 2;
-        bufferCtx.beginPath();
-        for (i = 0; i < len; i++) {
-            p = particles[i];
-            p.update();
-            bufferCtx.moveTo(p.x, p.y);
-            bufferCtx.lineTo(p._latest.x, p._latest.y);
+        function removeParticle(num) {
+            if (particles.length < num) num = particles.length;
+            for (var i = 0; i < num; i++) {
+                particles.pop();
+            }
         }
-        bufferCtx.stroke();
-        bufferCtx.beginPath();
-        for (i = 0; i < len; i++) {
-            p = particles[i];
-            bufferCtx.moveTo(p.x, p.y);
-            bufferCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2, false);
-        }
-        bufferCtx.fill();
-        bufferCtx.restore();
 
-        context.drawImage(bufferCvs, 0, 0);
 
-        requestAnimationFrame(loop);
-    };
-    loop();
+        // GUI Control
+
+        control = {
+            particleNum: 250
+        };
+
+
+        // Init
+
+        canvas  = document.getElementById('c');
+        bufferCvs = document.createElement('canvas');
+
+        window.addEventListener('resize', resize, false);
+        resize(null);
+
+        addParticle(control.particleNum);
+
+        canvas.addEventListener('mousemove', mouseMove, false);
+        canvas.addEventListener('mousedown', mouseDown, false);
+        canvas.addEventListener('mouseup', mouseUp, false);
+        canvas.addEventListener('dblclick', doubleClick, false);
+
+
+        // GUI
+
+        gui = new dat.GUI();
+        gui.add(control, 'particleNum', 0, 1000).step(1).name('Particle Num').onChange(function() {
+            var n = (control.particleNum | 0) - particles.length;
+            if (n > 0)
+                addParticle(n);
+            else if (n < 0)
+                removeParticle(-n);
+        });
+        gui.add(GravityPoint, 'interferenceToPoint').name('Interference Between Point');
+        gui.close();
+
+
+        // Start Update
+
+        var loop = function() {
+            var i, len, g, p;
+
+            context.save();
+            context.fillStyle = BACKGROUND_COLOR;
+            context.fillRect(0, 0, screenWidth, screenHeight);
+            context.fillStyle = grad;
+            context.fillRect(0, 0, screenWidth, screenHeight);
+            context.restore();
+
+            for (i = 0, len = gravities.length; i < len; i++) {
+                g = gravities[i];
+                if (g.dragging) g.drag(mouse);
+                g.render(context);
+                if (g.destroyed) {
+                    gravities.splice(i, 1);
+                    len--;
+                    i--;
+                }
+            }
+        
+            bufferCtx.save();
+            bufferCtx.globalCompositeOperation = 'destination-out';
+            bufferCtx.globalAlpha = 0.35;
+            bufferCtx.fillRect(0, 0, screenWidth, screenHeight);
+            bufferCtx.restore();
+
+            len = particles.length;
+            bufferCtx.save();
+            bufferCtx.fillStyle = bufferCtx.strokeStyle = '#fff';
+            bufferCtx.lineCap = bufferCtx.lineJoin = 'round';
+            bufferCtx.lineWidth = PARTICLE_RADIUS * 2;
+            bufferCtx.beginPath();
+            for (i = 0; i < len; i++) {
+                p = particles[i];
+                p.update();
+                bufferCtx.moveTo(p.x, p.y);
+                bufferCtx.lineTo(p._latest.x, p._latest.y);
+            }
+            bufferCtx.stroke();
+            bufferCtx.beginPath();
+            for (i = 0; i < len; i++) {
+                p = particles[i];
+                bufferCtx.moveTo(p.x, p.y);
+                bufferCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2, false);
+            }
+            bufferCtx.fill();
+            bufferCtx.restore();
+
+            context.drawImage(bufferCvs, 0, 0);
+
+            requestAnimationFrame(loop);
+        };
+        loop();
 
 })();
