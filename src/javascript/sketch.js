@@ -1,5 +1,7 @@
 /**
- * requestAnimationFrame
+ * Polyfill for requestAnimationFrame
+ * Ensures cross-browser compatibility by checking various vendor-prefixed versions.
+ * Falls back to setTimeout with a 60 FPS interval if requestAnimationFrame is not available.
  */
 window.requestAnimationFrame = (function(){
     return  window.requestAnimationFrame       ||
@@ -13,8 +15,10 @@ window.requestAnimationFrame = (function(){
 })();
 
 
+
 /**
- * Vector
+ * Vector Class
+ * Represents a 2D vector with basic vector operations.
  */
 function Vector(x, y) {
     this.x = x || 0;
@@ -39,7 +43,6 @@ Vector.random = function() {
         Math.random() * 2 - 1
     );
 };
-
 Vector.prototype = {
     set: function(x, y) {
         if (typeof x === 'object') {
@@ -125,7 +128,8 @@ Vector.prototype = {
 
 
 /**
- * GravityPoint
+ * GravityPoint Class
+ * Represents a point that attracts particles with gravity.
  */
 function GravityPoint(x, y, radius, targets) {
     Vector.call(this, x, y);
@@ -272,7 +276,8 @@ GravityPoint.prototype = (function(o) {
 
 
 /**
- * Particle
+ * Particle Class
+ * Represents a particle that can be influenced by gravity points.
  */
 function Particle(x, y, radius) {
     Vector.call(this, x, y);
@@ -436,7 +441,7 @@ Particle.prototype = (function(o) {
     // GUI Control
 
     control = {
-        particleNum: 100
+        particleNum: 250
     };
 
 
@@ -499,10 +504,6 @@ Particle.prototype = (function(o) {
         bufferCtx.fillRect(0, 0, screenWidth, screenHeight);
         bufferCtx.restore();
 
-        // パーティクルをバッファに描画
-        // for (i = 0, len = particles.length; i < len; i++) {
-        //     particles[i].render(bufferCtx);
-        // }
         len = particles.length;
         bufferCtx.save();
         bufferCtx.fillStyle = bufferCtx.strokeStyle = '#fff';
@@ -525,7 +526,6 @@ Particle.prototype = (function(o) {
         bufferCtx.fill();
         bufferCtx.restore();
 
-        // バッファをキャンバスに描画
         context.drawImage(bufferCvs, 0, 0);
 
         requestAnimationFrame(loop);
